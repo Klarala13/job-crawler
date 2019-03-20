@@ -7,23 +7,24 @@ const util = require("util");
 const promisifiedRequest = util.promisify(request);
 const cheerio = require("cheerio");
 const helper = require("./helper");
+const argv = require('yargs').argv
 //Hello World
 const work  = async () => {
   const list = [
     {
-      url: 'https://remoteok.io/remote-dev-jobs', 
+      link: 'https://remoteok.io/remote-dev-jobs',
       selector: ".position .preventLink h2"
     },
     {
-      link: 'https://www.stepstone.de/jobs', 
+      link: 'https://www.stepstone.de/jobs',
       selector: ".jsForce .job-element__body__company .job-element__url--shortened-title"
     },
     {
-      link: 'https://www.glassdoor.de/Job/berlin-jobs-SRCH_IL.0,6_IC2622109.htm', 
+      link: 'https://www.glassdoor.de/Job/berlin-jobs-SRCH_IL.0,6_IC2622109.htm',
       selector: ".jobTitle .jobLink"
     },
     {
-      link: 'https://www.monster.de/jobs/suche/?where=Berlin', 
+      link: 'https://www.monster.de/jobs/suche/?where=Berlin',
       selector: '.title a'
     }
   ]
@@ -45,7 +46,7 @@ const work  = async () => {
     const jobs = [];
     for (let i = 0; i < responses.length; i++) {
       const $ = cheerio.load(responses[i].body);
-      if($(list[i].selector).length > 0){    
+      if($(list[i].selector).length > 0){
           $(list[i].selector).each(function(i, elem){
             for (let term of terms){
               if(
@@ -58,9 +59,7 @@ const work  = async () => {
               }
             }
           });
-      } else {
-        throw new Error("Sorry, aint got now jobs 4u")
-    }
+      }
   }
     console.log('Found jobs: ', jobs);
     const mailResponse = await helper(jobs.join());
@@ -71,7 +70,15 @@ const work  = async () => {
     throw new Error(error)
   }
 };
+
+if (argv.test) {
+  console.log("Starting crawler in testmode")
+  work()
+}
+
 cron.schedule('30 2 * * *', () => {
   console.log('running a task every day at 2:30am');
   work()
 })
+
+
