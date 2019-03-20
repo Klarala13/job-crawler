@@ -1,3 +1,4 @@
+console.log({ path: __dirname + "/.env" })
 require("dotenv").config({ path: __dirname + "/.env" });
 const fs = require("fs");
 const nodemailer = require("nodemailer");
@@ -5,6 +6,7 @@ const MailError = require("./mailerror");
 
 module.exports = sendMail = html => {
   return new Promise(async (resolve, reject) =>{
+    console.log(this)
     const MAILHOST = process.env.MAILHOST;
     const MAILUSER = process.env.MAILUSER;
     const MAILPW = proccess.env.MAILPW;
