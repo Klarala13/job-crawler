@@ -62,7 +62,7 @@ const work  = async () => {
       }
   }
     console.log('Found jobs: ', jobs);
-    const mailResponse = await helper(jobs.join());
+    const mailResponse = helper(jobs.join());
 
     console.timeEnd("TimeConsumed");
     Logger(`Successfully send  with id: ${mailResponse.messageId}`)
